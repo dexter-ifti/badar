@@ -299,6 +299,25 @@ function App() {
         {/* Footer Decoration */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-slate-900 to-transparent"></div>
         
+        {/* Creator Footer */}
+        <div className="absolute bottom-4 left-0 right-0 text-center z-20">
+          <p className="text-slate-400 text-sm">
+            Created with{' '}
+            <Heart className="w-4 h-4 text-red-400 fill-current inline mx-1" />
+            by{' '}
+            <span className="text-amber-400 font-medium">dexter_ifti</span>
+            {' '} • {' '}
+            <a 
+              href="https://ifti.tech" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-400 hover:text-blue-300 transition-colors duration-200 hover:underline"
+            >
+              View Portfolio
+            </a>
+          </p>
+        </div>
+        
         {/* Floating Elements */}
         <div className="absolute top-1/4 left-10 animate-float">
           <div className="w-3 h-3 bg-amber-400 rounded-full opacity-70"></div>
