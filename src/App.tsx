@@ -15,7 +15,7 @@ function App() {
   const [newMessage, setNewMessage] = useState('');
   const [senderName, setSenderName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'; // Fallback for local development
+  const BACKEND_URL =  'http://localhost:3001'; // Fallback for local development
 
   // API endpoint for your messages server
   const MESSAGES_API = `${BACKEND_URL}/api/messages`;
