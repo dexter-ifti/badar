@@ -19,6 +19,10 @@ if (!fs.existsSync(MESSAGES_FILE)) {
   fs.writeFileSync(MESSAGES_FILE, JSON.stringify({ messages: [] }));
 }
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the Simple Messages Server! Use /api/messages to interact with messages.');
+});
+
 // Get all messages
 app.get('/api/messages', (req, res) => {
   try {
