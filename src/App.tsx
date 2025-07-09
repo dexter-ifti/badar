@@ -15,6 +15,10 @@ function App() {
   const [newMessage, setNewMessage] = useState('');
   const [senderName, setSenderName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001'; // Fallback for local development
+
+  // API endpoint for your messages server
+  const MESSAGES_API = `${BACKEND_URL}/api/messages`;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -22,30 +26,70 @@ function App() {
       setShowConfetti(true);
     }, 300);
 
-    // Load messages from localStorage
-    const savedMessages = localStorage.getItem('badar-congratulations');
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages));
-    }
+    // Load messages from server
+    loadMessages();
 
     return () => clearTimeout(timer);
   }, []);
 
-  const saveMessage = () => {
+  const loadMessages = async () => {
+    try {
+      const response = await fetch(MESSAGES_API);
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.messages || []);
+        // Sync with localStorage
+        localStorage.setItem('badar-congratulations', JSON.stringify(data.messages || []));
+      } else {
+        throw new Error('Failed to load from server');
+      }
+    } catch (error) {
+      console.log('Server unavailable, using localStorage');
+      const savedMessages = localStorage.getItem('badar-congratulations');
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      }
+    }
+  };
+
+  const saveMessage = async () => {
     if (!newMessage.trim() || !senderName.trim()) return;
 
     setIsSubmitting(true);
     
-    const message: Message = {
-      id: Date.now().toString(),
+    const messageData = {
       name: senderName.trim(),
-      message: newMessage.trim(),
-      timestamp: Date.now()
+      message: newMessage.trim()
     };
 
-    const updatedMessages = [message, ...messages];
-    setMessages(updatedMessages);
-    localStorage.setItem('badar-congratulations', JSON.stringify(updatedMessages));
+    try {
+      const response = await fetch(MESSAGES_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messageData)
+      });
+
+      if (response.ok) {
+        // Reload messages from server to get the latest
+        await loadMessages();
+      } else {
+        throw new Error('Failed to save to server');
+      }
+    } catch (error) {
+      console.log('Server unavailable, using localStorage only');
+      // Fallback to localStorage
+      const localMessage = {
+        id: Date.now().toString(),
+        name: senderName.trim(),
+        message: newMessage.trim(),
+        timestamp: Date.now()
+      };
+      const updatedMessages = [localMessage, ...messages];
+      setMessages(updatedMessages);
+      localStorage.setItem('badar-congratulations', JSON.stringify(updatedMessages));
+    }
     
     setNewMessage('');
     setSenderName('');
