@@ -4,8 +4,8 @@
   "description": "Simple server to store congratulations messages",
   "main": "simple-messages-server.js",
   "scripts": {
-    "start": "node simple-messages-server.js",
-    "dev": "nodemon simple-messages-server.js"
+    "start": "node simple-messages-server.cjs",
+    "dev": "nodemon simple-messages-server.cjs"
   },
   "dependencies": {
     "express": "^4.18.2",
